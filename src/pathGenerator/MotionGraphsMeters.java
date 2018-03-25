@@ -452,4 +452,16 @@ public class MotionGraphsMeters {
       	Gui.velocityGraph.setXLabel("time (seconds)");
       	Gui.velocityGraph.setTitle("Velocity Profile for Left and Right Wheels \n Left = Cyan, Right = Magenta");
 	}
+	
+	static void robotGraph(double height, double width) {
+		Gui.robocentricGraph.yGridOn();
+		Gui.robocentricGraph.xGridOn();
+		Gui.robocentricGraph.setYLabel("Y (Meters)");
+		Gui.robocentricGraph.setXLabel("X (Meters)");
+		Gui.robocentricGraph.setTitle("Relative position of robot path with left and right wheel trajectories");
+			
+		Gui.robocentricGraph.setXTic(0, height, 1);
+		Gui.robocentricGraph.setYTic(0, width, 1);
+					
+	}
 }

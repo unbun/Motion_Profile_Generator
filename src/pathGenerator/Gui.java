@@ -77,6 +77,7 @@ public class Gui {
 	
 	static FalconLinePlot blueAllianceGraph = new FalconLinePlot(new double[][]{{0.0,0.0}});
 	static FalconLinePlot velocityGraph = new FalconLinePlot(new double[][]{{0.0,0.0}});
+	static FalconLinePlot robocentricGraph = new FalconLinePlot(new double[][]{{0.0,0.0}});
 	static FalconLinePlot redAllianceGraph = new FalconLinePlot(new double[][]{{0.0,0.0}});
 			
 	private JTextArea txtAreaWaypoints;
@@ -143,11 +144,12 @@ public class Gui {
 		frmMotionProfileGenerator.getContentPane().add(tabbedPane);
 		tabbedPane.insertTab("Blue Alliance", null, blueAllianceGraph, null, 0);
 		tabbedPane.insertTab("Red Alliance", null, redAllianceGraph, null, 1);
-		tabbedPane.insertTab("Velocity", null, velocityGraph, null, 2);
+		tabbedPane.insertTab("Robot-Centric View", null, robocentricGraph, null, 2);
+		tabbedPane.insertTab("Velocity", null, velocityGraph, null, 3);
 		
 		velocityGraph.setSize(600, 600);
 		velocityGraph.setLocation(1070, 0);
-		
+				
 		JPanel trajecPanel = new JPanel();
 		trajecPanel.setBounds(0, 22, 450, 617);
 		frmMotionProfileGenerator.getContentPane().add(trajecPanel);
@@ -547,6 +549,8 @@ public class Gui {
 	    	velocityGraph.repaint();
 	    	redAllianceGraph.clearGraph();
 	    	redAllianceGraph.repaint();
+	    	robocentricGraph.clearGraph();
+	    	robocentricGraph.repaint();
 	    	
 			MotionGraphsFeet.motionGraphBlue();
 			MotionGraphsFeet.motionGraphRed();
@@ -561,10 +565,13 @@ public class Gui {
 	    	velocityGraph.repaint();
 	    	redAllianceGraph.clearGraph();
 	    	redAllianceGraph.repaint();
+	    	robocentricGraph.clearGraph();
+	    	robocentricGraph.repaint();
 	    	
 			MotionGraphsMeters.motionGraphBlue();
 			MotionGraphsMeters.motionGraphRed();
 			MotionGraphsMeters.velocityGraph();
+			MotionGraphsMeters.robotGraph(25, 25);
 		}
 	}
 	
@@ -668,8 +675,25 @@ public class Gui {
     	redAllianceGraph.clearGraph();
     	redAllianceGraph.repaint();
     	blueAllianceGraph.clearGraph();
-    	blueAllianceGraph.repaint();    	
+    	blueAllianceGraph.repaint();    
+    	robocentricGraph.clearGraph();
+    	robocentricGraph.repaint();
     	
+    	//get size of robocentric graph
+    	double maxX = 10, maxY = 10;
+		for(int i = 0; i < this.points.size(); i++) {
+			
+			if(points.get(i).x > maxX) 
+				maxX = points.get(i).x;
+			
+			if(points.get(i).y > maxY)
+				maxY = points.get(i).y;
+				
+		}
+		maxX += this.wheelBaseW;
+		maxY += this.wheelBaseW;
+
+		
     	if(cbUnits.getSelectedIndex() == 0)
 		{
 			// clear graphs
@@ -679,10 +703,13 @@ public class Gui {
 	    	velocityGraph.repaint();
 	    	redAllianceGraph.clearGraph();
 	    	redAllianceGraph.repaint();
+	    	robocentricGraph.clearGraph();
+	    	robocentricGraph.repaint();
 	    	
 			MotionGraphsFeet.motionGraphBlue();
 			MotionGraphsFeet.motionGraphRed();
 			MotionGraphsFeet.velocityGraph();
+			MotionGraphsFeet.robotGraph(maxX, maxY);
 		}
 		else
 		{
@@ -693,10 +720,13 @@ public class Gui {
 	    	velocityGraph.repaint();
 	    	redAllianceGraph.clearGraph();
 	    	redAllianceGraph.repaint();
+	    	robocentricGraph.clearGraph();
+	    	robocentricGraph.repaint();
 	    	
 			MotionGraphsMeters.motionGraphBlue();
 			MotionGraphsMeters.motionGraphRed();
 			MotionGraphsMeters.velocityGraph();
+			MotionGraphsFeet.robotGraph(maxX, maxY);
 		}
 		
 		if(timeStep > 0)
@@ -1475,6 +1505,10 @@ public class Gui {
 	       	redAllianceGraph.addData(leftPath, Color.magenta);
 	        redAllianceGraph.addData(rightPath, Color.magenta);
 	        redAllianceGraph.repaint();
+	        
+	        robocentricGraph.addData(leftPath, Color.cyan);
+	        robocentricGraph.addData(rightPath, Color.magenta);
+	        robocentricGraph.repaint();
 	        
 	     	// Velocity to be used in the Velocity graph
 	     	double[][] leftVelocity = new double[left.length()][2];
